@@ -136,7 +136,7 @@ aws ssm put-parameter   --name "/credentials/github"   --type "SecureString"   -
 
 ### 4. Command to connect to the manager node
 ```
-aws ssm start-session --target <Instance_id>--region us-east-1
+aws ssm start-session --target <Instance_id> --region us-east-1
 
 ```
 
