@@ -37,47 +37,50 @@ variable "existing_vpc_name" {
 variable "node" {
   description = "Kubernetes node configuration"
   type = object({
-    ami_id                   = string
-    key_name                 = string
-    instance_type_master     = string
-    instance_type_worker     = string
-    allowed_ip               = string
-    sg_name                  = string
-    sg_description           = string
-    inbound_ports            = list(number)
-    egress_cidr_block        = string
-    master_node_name         = string
-    master_node_role         = string
-    master_node_cluster      = string
-    ingress_cidr_block       = string
-    worker_node_cluster      = string
-    worker_node_role         = string
-    worker_node_name         = string
-    document_type            = string
+    ami_id                    = string
+    key_name                  = string
+    instance_type_master      = string
+    instance_type_worker      = string
+    allowed_ip                = string
+    sg_name                   = string
+    sg_description            = string
+    inbound_ports_for_master             = list(number)
+    inbound_ports_for_worker            = list(number)
+    egress_cidr_block         = string
+    master_node_name          = string
+    master_node_role          = string
+    master_node_cluster       = string
+    ingress_cidr_block        = string
+    worker_node_cluster       = string
+    worker_node_role          = string
+    worker_node_name          = string
+    document_type             = string
+    run_join_command_name     = string
+    configure_kubeconfig_name = string
   })
 }
 
 variable "iam" {
   description = "IAM configuration"
   type = object({
-    manager_role_name        = string
-    node_role_name           = string
-    manager_profile_name     = string
-    node_profile_name        = string
+    manager_role_name    = string
+    node_role_name       = string
+    manager_profile_name = string
+    node_profile_name    = string
   })
 }
 
 variable "manager" {
   description = "Bastion host configuration"
   type = object({
-    ami_id                 = string
-    manager_name           = string
-    manager_role           = string
-    manager_cluster        = string
-    manager_sg_name        = string
-    manager_instance_type  = string
-    user_data_file         = string
-    subnet_index           = number
+    ami_id                = string
+    manager_name          = string
+    manager_role          = string
+    manager_cluster       = string
+    manager_sg_name       = string
+    manager_instance_type = string
+    user_data_file        = string
+    subnet_index          = number
   })
 }
 

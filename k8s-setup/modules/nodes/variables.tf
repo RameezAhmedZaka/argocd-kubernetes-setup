@@ -44,11 +44,14 @@ variable "sg_description" {
   type        = string
 }
 
-variable "inbound_ports" {
+variable "inbound_ports_for_master" {
   description = "List of allowed TCP ports"
   type        = list(number)
 }
-
+variable "inbound_ports_for_worker" {
+  description = "List of allowed TCP ports"
+  type        = list(number)
+}
 variable "egress_cidr_block" {
   description = "CIDR block for access (e.g. 0.0.0.0/0)"
   type        = string
@@ -90,5 +93,11 @@ variable "worker_node_cluster" {
 }
 
 variable "document_type" {
+  type        = string
+}
+variable "run_join_command-name" {
+  type        = string
+}
+variable "configure_kubeconfig_name" {
   type        = string
 }

@@ -29,15 +29,15 @@ provider "kubectl" {
 # ----------------------------
 # helm provider
 # ----------------------------
-provider "helm" {
-  kubernetes = {
-    host                   = "https://${module.nodes.master_private_ip}:6443"
-    client_certificate     = base64decode(yamldecode(data.aws_ssm_parameter.kubeconfig.value)["users"][0]["user"]["client-certificate-data"])
-    client_key             = base64decode(yamldecode(data.aws_ssm_parameter.kubeconfig.value)["users"][0]["user"]["client-key-data"])
-    load_config_file       = false
-    insecure               = true
-  }
-}
+# provider "helm" {
+#   kubernetes = {
+#     host                   = "https://${module.nodes.master_private_ip}:6443"
+#     client_certificate     = base64decode(yamldecode(data.aws_ssm_parameter.kubeconfig.value)["users"][0]["user"]["client-certificate-data"])
+#     client_key             = base64decode(yamldecode(data.aws_ssm_parameter.kubeconfig.value)["users"][0]["user"]["client-key-data"])
+#     load_config_file       = false
+#     insecure               = true
+#   }
+# }
 
 
 provider "kubernetes" {
@@ -46,4 +46,3 @@ provider "kubernetes" {
   client_key             = base64decode(yamldecode(data.aws_ssm_parameter.kubeconfig.value)["users"][0]["user"]["client-key-data"])
   insecure               = true
 }
-

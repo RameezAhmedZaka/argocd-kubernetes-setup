@@ -1,5 +1,5 @@
 aws_region = "us-east-1"
-profile = "default"
+profile    = "default"
 
 # # VPC
 # vpc = {
@@ -20,47 +20,51 @@ profile = "default"
 #   eip_name                    = "nat-eip"
 # }
 
-existing_vpc_name = "my-k8s-vpc"
+existing_vpc_name = "my-vpc"
 
 # Nodes
 node = {
-  ami_id                   = "ami-0c02fb55956c7d316"
-  key_name                 = "k8s-key-us-east-1"
-  instance_type_master     = "t2.micro"
-  instance_type_worker     = "t2.micro"
-  allowed_ip               = "203.0.113.10/32"
-  sg_name                  = "k8s-sg"
-  sg_description           = "Allow K8s and SSH"
-  inbound_ports            = [6443, 10250, 30000, 32767]
-  egress_cidr_block        = "0.0.0.0/0"
-  master_node_name         = "k8s-master-node"
-  master_node_role         = "master"
-  master_node_cluster      = "dev-cluster"
-  ingress_cidr_block       = "10.0.0.0/16"
-  worker_node_cluster      = "dev-cluster"
-  worker_node_role         = "worker"
-  worker_node_name         = "k8s-worker"
-  document_type            = "Command"
+  ami_id                    = "ami-0c02fb55956c7d316"
+  key_name                  = "test-ec2"
+  instance_type_master      = "t2.micro"
+  instance_type_worker      = "t2.micro"
+  allowed_ip                = "203.0.113.10/32"
+  sg_name                   = "zb-k8s-sg"
+  sg_description            = "Allow K8s and SSH"
+  inbound_ports_for_master             = [6443]
+  inbound_ports_for_worker             = [30000,32767]
+  egress_cidr_block         = "0.0.0.0/0"
+  master_node_name          = "zb-k8s-master-node"
+  master_node_role          = "zb-master"
+  master_node_cluster       = "zb-dev-cluster"
+  ingress_cidr_block        = "10.0.0.0/16"
+  worker_node_cluster       = "zb-dev-cluster"
+  worker_node_role          = "zb-worker"
+  worker_node_name          = "zb-k8s-worker"
+  document_type             = "Command"
+  run_join_command_name     = "zubair-RunJoinCommand"
+configure_kubeconfig_name = "zubair-configure-kubeconfig"
+
 }
 
 # IAM
 iam = {
-  manager_role_name        = "manager-ssm-role"
-  node_role_name           = "node-ssm-role"
-  manager_profile_name     = "manager-ssm-profile"
-  node_profile_name        = "node-ssm-profile"
+  manager_role_name    = "zb-manager-ssm-role"
+  node_role_name       = "zb-node-ssm-role"
+  manager_profile_name = "zb-manager-ssm-profile"
+  node_profile_name    = "zb-node-ssm-profile"
 }
 
 # manager Host
 manager = {
   ami_id                = "ami-0c02fb55956c7d316"
-  manager_name          = "nodes-manager"
-  manager_role          = "manager"
-  manager_cluster       = "dev-cluster"
-  manager_sg_name       = "nodes-manager-sg"
+  manager_name          = "zb-nodes-manager"
+  manager_role          = "zb-manager"
+  manager_cluster       = "zb-dev-cluster"
+  manager_sg_name       = "zb-nodes-manager-sg"
   manager_instance_type = "t2.micro"
   user_data_file        = "./user_data_ssm.sh"
-  subnet_index          = 3
+  subnet_index          = 2
 }
 
 

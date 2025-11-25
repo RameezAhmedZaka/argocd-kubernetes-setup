@@ -4,7 +4,7 @@
 data "aws_vpc" "selected" {
   filter {
     name   = "tag:Name"
-    values = ["my-k8s-vpc"]
+    values = ["my-vpc"]
   }
 }
 
@@ -18,8 +18,8 @@ data "aws_subnets" "public" {
   }
 
   filter {
-    name   = "tag:Type"
-    values = ["public"]
+    name   = "tag:Name"
+    values = ["*public*"]
   }
 }
 
@@ -30,14 +30,14 @@ data "aws_subnets" "private" {
   }
 
   filter {
-    name   = "tag:Type"
-    values = ["private"]
+    name   = "tag:Name"
+    values = ["*private*"]
   }
 }
 
 data "aws_ssm_parameter" "kubeconfig" {
   depends_on      = [module.manager.fetch_kubeconfig_id] 
-  name            = "/k8s/kubeconfig"
+  name            = "/zubair/k8s/kubeconfig"
   with_decryption = true
 }
 

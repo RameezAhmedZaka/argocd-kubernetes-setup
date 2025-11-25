@@ -69,7 +69,7 @@ JOIN_CMD=$(kubeadm token create --print-join-command)
 
 region=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | grep region | cut -d\" -f4)
 aws ssm put-parameter \
-  --name "/k8s/join-command" \
+  --name "/zubair/k8s/join-command" \
   --type "String" \
   --value "$JOIN_CMD" \
   --overwrite \
@@ -77,13 +77,10 @@ aws ssm put-parameter \
 
 
 
-
 aws ssm put-parameter \
-  --name "/k8s/kubeconfig" \
+  --name "/zubair/k8s/kubeconfig" \
   --type "SecureString" \
   --tier Advanced \
   --value "$(cat /etc/kubernetes/admin.conf)" \
   --overwrite \
   --region us-east-1
-
-
