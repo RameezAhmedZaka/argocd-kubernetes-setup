@@ -44,8 +44,8 @@ variable "node" {
     allowed_ip                = string
     sg_name                   = string
     sg_description            = string
-    inbound_ports_for_master             = list(number)
-    inbound_ports_for_worker            = list(number)
+    inbound_ports_for_master  = list(number)
+    inbound_ports_for_worker  = list(number)
     egress_cidr_block         = string
     master_node_name          = string
     master_node_role          = string

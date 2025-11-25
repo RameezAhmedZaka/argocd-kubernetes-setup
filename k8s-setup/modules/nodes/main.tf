@@ -11,17 +11,17 @@ resource "aws_security_group" "master_sg" {
       from_port   = ingress.value
       to_port     = ingress.value
       protocol    = "tcp"
-      cidr_blocks = [var.ingress_cidr_block] 
+      cidr_blocks = [var.ingress_cidr_block]
     }
   }
 
   # Allow Kubernetes API from worker nodes specifically
   ingress {
-    description              = "Kubernetes API from worker nodes"
-    from_port                = 6443
-    to_port                  = 6443
-    protocol                 = "tcp"
-    security_groups = [aws_security_group.worker_sg.id]  
+    description     = "Kubernetes API from worker nodes"
+    from_port       = 6443
+    to_port         = 6443
+    protocol        = "tcp"
+    security_groups = [aws_security_group.worker_sg.id]
   }
 
   egress {
@@ -47,17 +47,17 @@ resource "aws_security_group" "worker_sg" {
       from_port   = ingress.value
       to_port     = ingress.value
       protocol    = "tcp"
-      cidr_blocks = [var.ingress_cidr_block] 
+      cidr_blocks = [var.ingress_cidr_block]
     }
   }
 
   ingress {
-  description = "NodePort range"
-  from_port   = 30000
-  to_port     = 32767
-  protocol    = "tcp"
-  cidr_blocks = [var.ingress_cidr_block] # or trusted CIDR only
-}
+    description = "NodePort range"
+    from_port   = 30000
+    to_port     = 32767
+    protocol    = "tcp"
+    cidr_blocks = [var.ingress_cidr_block] # or trusted CIDR only
+  }
 
 
   egress {
@@ -72,11 +72,11 @@ resource "aws_security_group" "worker_sg" {
   }
 }
 resource "aws_security_group_rule" "worker_kubelet" {
-  type              = "ingress"
-  from_port         = 10250
-  to_port           = 10250
-  protocol          = "tcp"
-  security_group_id = aws_security_group.worker_sg.id
+  type                     = "ingress"
+  from_port                = 10250
+  to_port                  = 10250
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.worker_sg.id
   source_security_group_id = aws_security_group.master_sg.id
 }
 
@@ -130,13 +130,13 @@ resource "aws_instance" "workers" {
   associate_public_ip_address = false
   iam_instance_profile        = var.iam_instance_profile
   user_data                   = file("${path.module}/user_data_worker.sh")
-  
-  depends_on                  = [aws_instance.master, null_resource.wait_for_join]
+
+  depends_on = [aws_instance.master, null_resource.wait_for_join]
 
   tags = {
     Name    = "${var.worker_node_name}-${count.index + 1}"
-    Role    =  var.worker_node_role
-    Cluster =  var.worker_node_cluster
+    Role    = var.worker_node_role
+    Cluster = var.worker_node_cluster
 
 
   }
@@ -144,7 +144,7 @@ resource "aws_instance" "workers" {
 
 resource "aws_ssm_document" "run_join_command" {
   name          = var.run_join_command-name
-  depends_on    = [ aws_instance.workers, aws_instance.master ]
+  depends_on    = [aws_instance.workers, aws_instance.master]
   document_type = var.document_type
 
   content = jsonencode({

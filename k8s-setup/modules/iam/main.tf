@@ -44,8 +44,8 @@ resource "aws_iam_role_policy" "manager_custom_ssm_policy" {
         Resource = "*"
       },
       {
-        Effect = "Allow",
-        Action = ["ec2:DescribeInstances"],
+        Effect   = "Allow",
+        Action   = ["ec2:DescribeInstances"],
         Resource = "*"
       },
       {

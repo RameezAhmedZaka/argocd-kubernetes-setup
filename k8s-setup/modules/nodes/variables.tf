@@ -69,35 +69,35 @@ variable "ingress_cidr_block" {
 }
 
 variable "master_node_name" {
-  type        = string
+  type = string
 }
 
 variable "master_node_role" {
-  type        = string
+  type = string
 }
 
 variable "master_node_cluster" {
-  type        = string
+  type = string
 }
 
 variable "worker_node_name" {
-  type        = string
+  type = string
 }
 
 variable "worker_node_role" {
-  type        = string
+  type = string
 }
 
 variable "worker_node_cluster" {
-  type        = string
+  type = string
 }
 
 variable "document_type" {
-  type        = string
+  type = string
 }
 variable "run_join_command-name" {
-  type        = string
+  type = string
 }
 variable "configure_kubeconfig_name" {
-  type        = string
+  type = string
 }

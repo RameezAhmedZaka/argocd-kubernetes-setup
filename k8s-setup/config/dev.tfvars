@@ -31,8 +31,8 @@ node = {
   allowed_ip                = "203.0.113.10/32"
   sg_name                   = "zb-k8s-sg"
   sg_description            = "Allow K8s and SSH"
-  inbound_ports_for_master             = [6443]
-  inbound_ports_for_worker             = [30000,32767]
+  inbound_ports_for_master  = [6443]
+  inbound_ports_for_worker  = [30000, 32767]
   egress_cidr_block         = "0.0.0.0/0"
   master_node_name          = "zb-k8s-master-node"
   master_node_role          = "zb-master"
@@ -43,7 +43,7 @@ node = {
   worker_node_name          = "zb-k8s-worker"
   document_type             = "Command"
   run_join_command_name     = "zubair-RunJoinCommand"
-configure_kubeconfig_name = "zubair-configure-kubeconfig"
+  configure_kubeconfig_name = "zubair-configure-kubeconfig"
 
 }
 

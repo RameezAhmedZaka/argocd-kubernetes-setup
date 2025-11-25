@@ -23,16 +23,16 @@ module "vpc" {
 # Bastion Module
 # ------------------------------
 module "bastion" {
-  source                  = "./modules/bastion"
-  vpc_id                  = module.vpc.vpc_id
-  public_subnet_id        = module.vpc.public_subnet_ids[0]  # pick first public subnet
-  ami_id                  = var.bastion.ami_id
-  instance_type           = var.bastion.instance_type
-  user_data_file          = var.bastion.user_data_file
-  bastion_sg_name         = var.bastion.bastion_sg_name
-  bastion_sg_egress_cidr  = var.bastion.bastion_sg_egress_cidr
-  bastion_name            = var.bastion.bastion_name
-  bastion_role            = var.bastion.bastion_role
-  bastion_cluster         = var.bastion.bastion_cluster
-  key_name                = var.bastion.key_name
+  source                 = "./modules/bastion"
+  vpc_id                 = module.vpc.vpc_id
+  public_subnet_id       = module.vpc.public_subnet_ids[0] # pick first public subnet
+  ami_id                 = var.bastion.ami_id
+  instance_type          = var.bastion.instance_type
+  user_data_file         = var.bastion.user_data_file
+  bastion_sg_name        = var.bastion.bastion_sg_name
+  bastion_sg_egress_cidr = var.bastion.bastion_sg_egress_cidr
+  bastion_name           = var.bastion.bastion_name
+  bastion_role           = var.bastion.bastion_role
+  bastion_cluster        = var.bastion.bastion_cluster
+  key_name               = var.bastion.key_name
 }

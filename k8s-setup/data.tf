@@ -36,7 +36,7 @@ data "aws_subnets" "private" {
 }
 
 data "aws_ssm_parameter" "kubeconfig" {
-  depends_on      = [module.manager.fetch_kubeconfig_id] 
+  depends_on      = [module.manager.fetch_kubeconfig_id]
   name            = "/zubair/k8s/kubeconfig"
   with_decryption = true
 }

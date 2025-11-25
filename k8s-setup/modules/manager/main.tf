@@ -4,12 +4,12 @@
 resource "aws_security_group" "bastion_sg" {
   name   = var.manager_sg_name
   vpc_id = var.vpc_id
-  
+
   ingress {
     from_port   = 30000
     to_port     = 32767
     protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/16"]  
+    cidr_blocks = ["10.0.0.0/16"]
   }
 
   ingress {

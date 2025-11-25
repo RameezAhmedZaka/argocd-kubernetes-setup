@@ -31,7 +31,7 @@ resource "aws_instance" "bastion" {
   associate_public_ip_address = true
   key_name                    = var.key_name
 
-  user_data                   = file("${path.module}/user_data.sh")
+  user_data = file("${path.module}/user_data.sh")
 
   tags = {
     Name    = var.bastion_name

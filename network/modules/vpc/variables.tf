@@ -64,6 +64,6 @@ variable "route_table_private" {
 }
 
 variable "eip_name" {
-  type        = string
- 
+  type = string
+
 }

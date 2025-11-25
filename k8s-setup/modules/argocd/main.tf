@@ -107,7 +107,7 @@ resource "kubectl_manifest" "argocd_app" {
     kubectl_manifest.github_secret,
     kubectl_manifest.argocd_repo
   ]
-  
+
 
 
   yaml_body = file("${path.module}/argocd_app.yaml")

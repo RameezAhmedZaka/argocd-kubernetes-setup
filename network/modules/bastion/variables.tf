@@ -51,5 +51,5 @@ variable "bastion_cluster" {
 }
 
 variable "key_name" {
-  type        = string
+  type = string
 }
