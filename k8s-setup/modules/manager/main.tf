@@ -98,10 +98,7 @@ resource "null_resource" "fetch_kubeconfig" {
     command = <<EOT
       echo "⌛ Waiting up to 10 minutes for kubeconfig on manager..."
 
-      INSTANCE_ID=$(aws ec2 describe-instances \
-        --filters "Name=tag:Name,Values=${var.environment}-${var.manager_name}" \
-        --query "Reservations[0].Instances[0].InstanceId" \
-        --output text)
+     INSTANCE_ID=${var.master_instance_id}
 
       for i in {1..20}; do
         CMD_ID=$(aws ssm send-command \
