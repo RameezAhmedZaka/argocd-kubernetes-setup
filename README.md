@@ -77,7 +77,7 @@ Copy code
 - Installed on the cluster.  
 - Configured dynamically using the `kubeconfig` retrieved at runtime from Parameter Store.  
 - Pulls manifiest code with the application image from GitHub **https://github.com/RameezAhmedZaka/argocd-dataapp.git** and deploys automatically.
-- THe steps to download the argocd cli
+- The steps to download the argocd cli
   ```
   VERSION=v2.13.4
   curl -sSL -o argocd https://github.com/argoproj/argo-cd/releases/download/$VERSION/argocd-linux-amd64
@@ -85,12 +85,18 @@ Copy code
   sudo mv argocd /usr/local/bin/argocd
   export PATH=$PATH:/usr/local/bin
   ```
-- To access the ui use
+- To access the ui and cli use
   ```
-  nohup kubectl port-forward svc/argocd-server -n argocd 9090:443 > /var/log/argocd-portforward.log 2>&1 &) than will be accessible on [port 9090](https://localhost:9090/)
+  kubectl port-forward svc/argocd-server -n argocd 8080:443 > /var/log/argocd-portforward.log 2>&1 &
   ```
--  Initial username = admin and to get the password use ( kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d; echo)   
-
+  ```
+  argocd login localhost:8080 --username admin --password fjfYsKrbJYtaTQtb --insecure
+  ```
+   
+-  Initial username = admin and to get the password use
+  ```
+  kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d; echo)   
+  ```
 ### CI/CD Flow
 
 1. **[Application repo](https://github.com/RameezAhmedZaka/github-action-cicd.git)** contains code + Dockerfile.  
