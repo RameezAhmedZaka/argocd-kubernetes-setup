@@ -75,3 +75,7 @@ variable "master_private_ip" {
   description = "Private IP address of master node"
   type        = string
 }
+variable "environment" {
+  type = string
+}
+

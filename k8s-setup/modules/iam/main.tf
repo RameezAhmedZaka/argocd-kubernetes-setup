@@ -1,5 +1,5 @@
 resource "aws_iam_role" "manager_ssm_role" {
-  name = var.manager_role_name
+  name = "${var.environment}-${var.manager_role_name}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -15,7 +15,7 @@ resource "aws_iam_role" "manager_ssm_role" {
 }
 
 resource "aws_iam_role_policy" "manager_custom_ssm_policy" {
-  name = "${var.manager_role_name}-custom-policy"
+  name = "${var.environment}-${var.manager_role_name}-custom-policy"
   role = aws_iam_role.manager_ssm_role.id
 
   policy = jsonencode({
@@ -67,7 +67,7 @@ resource "aws_iam_role_policy_attachment" "manager_ssm_core_attachment" {
 }
 
 resource "aws_iam_instance_profile" "manager_ssm_instance_profile" {
-  name = var.manager_profile_name
+  name = "${var.environment}-${var.manager_profile_name}"
   role = aws_iam_role.manager_ssm_role.name
 }
 
@@ -78,7 +78,7 @@ resource "aws_iam_instance_profile" "manager_ssm_instance_profile" {
 # -------------------
 
 resource "aws_iam_role" "node_ssm_role" {
-  name = var.node_role_name
+  name = "${var.environment}-${var.node_role_name}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -94,7 +94,7 @@ resource "aws_iam_role" "node_ssm_role" {
 }
 
 resource "aws_iam_role_policy" "node_limited_ssm_policy" {
-  name = "${var.node_role_name}-limited-policy"
+  name = "${var.environment}-${var.node_role_name}-limited-policy"
   role = aws_iam_role.node_ssm_role.id
 
   policy = jsonencode({
@@ -120,6 +120,6 @@ resource "aws_iam_role_policy_attachment" "node_ssm_core_attachment" {
 }
 
 resource "aws_iam_instance_profile" "node_ssm_instance_profile" {
-  name = var.node_profile_name
+  name = "${var.environment}-${var.node_profile_name}"
   role = aws_iam_role.node_ssm_role.name
 }

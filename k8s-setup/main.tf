@@ -8,6 +8,7 @@ module "iam" {
   node_role_name       = var.iam.node_role_name
   manager_profile_name = var.iam.manager_profile_name
   node_profile_name    = var.iam.node_profile_name
+  environment          = var.environment
 }
 
 # ----------------------------
@@ -37,6 +38,7 @@ module "nodes" {
   document_type             = var.node.document_type
   run_join_command-name     = var.node.run_join_command_name
   configure_kubeconfig_name = var.node.configure_kubeconfig_name
+  environment               = var.environment
 }
 
 # ----------------------------
@@ -57,6 +59,7 @@ module "manager" {
   master_private_ip    = module.nodes.master_private_ip
   master_instance_id   = module.nodes.master_instance_id
   worker_instance_id   = module.nodes.worker_instances
+  environment          = var.environment
 }
 
 # module "argocd" {

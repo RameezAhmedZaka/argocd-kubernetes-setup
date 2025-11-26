@@ -15,15 +15,6 @@ resource "aws_security_group" "master_sg" {
     }
   }
 
-  # Allow Kubernetes API from worker nodes specifically
-  ingress {
-    description     = "Kubernetes API from worker nodes"
-    from_port       = 6443
-    to_port         = 6443
-    protocol        = "tcp"
-    security_groups = [aws_security_group.worker_sg.id]
-  }
-
   egress {
     from_port   = 0
     to_port     = 0
@@ -32,7 +23,7 @@ resource "aws_security_group" "master_sg" {
   }
 
   tags = {
-    Name = "kubernetes-master-sg"
+    Name = "${var.environment}-kubernetes-master-sg"
   }
 }
 resource "aws_security_group" "worker_sg" {
@@ -52,11 +43,19 @@ resource "aws_security_group" "worker_sg" {
   }
 
   ingress {
-    description = "NodePort range"
+    description = "Allow Worker to reach Master K8s API"
+    from_port   = 6443
+    to_port     = 6443
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
+  ingress {
+    description = "Kubernetes NodePort range"
     from_port   = 30000
     to_port     = 32767
     protocol    = "tcp"
-    cidr_blocks = [var.ingress_cidr_block] # or trusted CIDR only
+    cidr_blocks = ["10.0.0.0/16"]
   }
 
 
@@ -68,7 +67,7 @@ resource "aws_security_group" "worker_sg" {
   }
 
   tags = {
-    Name = "kubernetes-worker-sg"
+    Name = "${var.environment}-kubernetes-worker-sg"
   }
 }
 resource "aws_security_group_rule" "worker_kubelet" {
@@ -80,11 +79,6 @@ resource "aws_security_group_rule" "worker_kubelet" {
   source_security_group_id = aws_security_group.master_sg.id
 }
 
-
-
-
-
-
 resource "aws_instance" "master" {
   ami                         = var.ami_id
   instance_type               = var.instance_type_master
@@ -94,10 +88,13 @@ resource "aws_instance" "master" {
   associate_public_ip_address = false
   iam_instance_profile        = var.iam_instance_profile
 
-  user_data = file("${path.module}/user_data_master.sh")
+  # user_data = file("${path.module}/user_data_master.sh")
+  user_data = templatefile("${path.module}/user_data_master.sh", {
+    environment = var.environment
+  })
 
   tags = {
-    Name    = var.master_node_name
+    Name    = "${var.environment}-${var.master_node_name}"
     Role    = var.master_node_role
     Cluster = var.master_node_cluster
   }
@@ -110,8 +107,8 @@ resource "null_resource" "wait_for_join" {
     command = <<EOT
 echo "Sleeping for 200 seconds to allow master user-data to complete..."
 sleep 200
-echo "Waiting for /zubair/k8s/join-command SSM parameter..."
-while [ -z "$(aws ssm get-parameter --name "/zubair/k8s/join-command" --region us-east-1 --query "Parameter.Value" --output text 2>/dev/null)" ]; do
+echo "Waiting for /${var.environment}/k8s/join-command SSM parameter..."
+while [ -z "$(aws ssm get-parameter --name "/${var.environment}/k8s/join-command" --region us-east-1 --query "Parameter.Value" --output text 2>/dev/null)" ]; do
   sleep 5
 done
 echo "SSM parameter exists, continuing..."
@@ -129,12 +126,15 @@ resource "aws_instance" "workers" {
   key_name                    = var.key_name
   associate_public_ip_address = false
   iam_instance_profile        = var.iam_instance_profile
-  user_data                   = file("${path.module}/user_data_worker.sh")
+  # user_data                   = file("${path.module}/user_data_worker.sh")
+  user_data = templatefile("${path.module}/user_data_worker.sh", {
+    environment = var.environment
+  })
 
   depends_on = [aws_instance.master, null_resource.wait_for_join]
 
   tags = {
-    Name    = "${var.worker_node_name}-${count.index + 1}"
+    Name    = "${var.environment}-${var.worker_node_name}-${count.index + 1}"
     Role    = var.worker_node_role
     Cluster = var.worker_node_cluster
 
@@ -143,7 +143,7 @@ resource "aws_instance" "workers" {
 }
 
 resource "aws_ssm_document" "run_join_command" {
-  name          = var.run_join_command-name
+  name          = "${var.environment}-${var.run_join_command-name}"
   depends_on    = [aws_instance.workers, aws_instance.master]
   document_type = var.document_type
 
@@ -158,7 +158,7 @@ resource "aws_ssm_document" "run_join_command" {
           runCommand = [
             "region=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | grep region | cut -d\\\" -f4)",
             "for i in {1..30}; do",
-            "  JOIN_CMD=$(aws ssm get-parameter --name /zubair/k8s/join-command --region $region --query 'Parameter.Value' --output text 2>/dev/null)",
+            "  JOIN_CMD=$(aws ssm get-parameter --name /${var.environment}/k8s/join-command --region $region --query 'Parameter.Value' --output text 2>/dev/null)",
             "  if [ -n \"$JOIN_CMD\" ]; then",
             "    sudo $JOIN_CMD",
             "    break",
@@ -175,7 +175,7 @@ resource "aws_ssm_document" "run_join_command" {
 
 
 resource "aws_ssm_document" "configure_kubeconfig" {
-  name          = var.configure_kubeconfig_name
+  name          = "${var.environment}-${var.configure_kubeconfig_name}"
   document_type = var.document_type
 
   content = jsonencode({
@@ -189,7 +189,7 @@ resource "aws_ssm_document" "configure_kubeconfig" {
           runCommand = [
             "#!/bin/bash",
             "mkdir -p ~/.kube",
-            "aws ssm get-parameter --name /zubair/k8s/kubeconfig --region ${var.region} --query 'Parameter.Value' --output text > ~/.kube/config",
+            "aws ssm get-parameter --name /${var.environment}/k8s/kubeconfig --region ${var.region} --query 'Parameter.Value' --output text > ~/.kube/config",
             "chmod 600 ~/.kube/config"
           ]
         }

@@ -37,7 +37,7 @@ data "aws_subnets" "private" {
 
 data "aws_ssm_parameter" "kubeconfig" {
   depends_on      = [module.manager.fetch_kubeconfig_id]
-  name            = "/zubair/k8s/kubeconfig"
+  name            = "/${var.environment}/k8s/kubeconfig"
   with_decryption = true
 }
 
@@ -50,4 +50,3 @@ locals {
   cluster_info = local.kubeconfig_yaml["clusters"][0]["cluster"]
   user_info    = local.kubeconfig_yaml["users"][0]["user"]
 }
-

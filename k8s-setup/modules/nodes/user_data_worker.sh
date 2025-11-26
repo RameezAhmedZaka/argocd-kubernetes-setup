@@ -57,7 +57,7 @@ sleep 40
 region=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | grep region | cut -d\" -f4)
 
 JOIN_CMD=$(aws ssm get-parameter \
-  --name "/zubair/k8s/join-command" \
+  --name "/${environment}/k8s/join-command" \
   --region "$region" \
   --query "Parameter.Value" \
   --output text)

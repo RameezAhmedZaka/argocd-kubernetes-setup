@@ -17,3 +17,6 @@ variable "node_profile_name" {
   type        = string
   description = "IAM Instance Profile name for node EC2"
 }
+variable "environment" {
+  type = string
+}

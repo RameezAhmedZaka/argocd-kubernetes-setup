@@ -50,7 +50,7 @@ systemctl start amazon-ssm-agent
 # Fetch kubeconfig from SSM Parameter Store
 mkdir -p /root/.kube
 sudo chmod 700 /root/.kube
-aws ssm get-parameter --name "/k8s/kubeconfig" --with-decryption --region us-east-1 --query "Parameter.Value" --output text > /root/.kube/config
+aws ssm get-parameter --name "/${environment}/k8s/kubeconfig" --with-decryption --region us-east-1 --query "Parameter.Value" --output text > /root/.kube/config
 sudo chmod 600 /root/.kube/config
 export KUBECONFIG=/root/.kube/config
 sudo chown ec2-user:ec2-user /root/.kube/config
@@ -65,7 +65,7 @@ sudo chown -R ssm-user:ssm-user /home/ssm-user/.kube
 
 # Fetch kubeconfig into the correct file
 sudo aws ssm get-parameter \
-  --name "/k8s/kubeconfig" \
+  --name "/${environment}/k8s/kubeconfig" \
   --with-decryption \
   --region us-east-1 \
   --query "Parameter.Value" \

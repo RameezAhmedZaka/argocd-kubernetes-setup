@@ -1,8 +1,8 @@
 # ----------------------------
 # Security Group for Manager
 # ----------------------------
-resource "aws_security_group" "bastion_sg" {
-  name   = var.manager_sg_name
+resource "aws_security_group" "manager_sg" {
+  name   = "${var.environment}-${var.manager_sg_name}"
   vpc_id = var.vpc_id
 
   ingress {
@@ -36,8 +36,8 @@ resource "aws_security_group_rule" "allow_manager_to_master_api" {
   from_port                = 6443
   to_port                  = 6443
   protocol                 = "tcp"
-  security_group_id        = aws_security_group.bastion_sg.id
-  source_security_group_id = aws_security_group.bastion_sg.id
+  security_group_id        = aws_security_group.manager_sg.id
+  source_security_group_id = aws_security_group.manager_sg.id
 }
 
 # ----------------------------
@@ -59,14 +59,17 @@ resource "aws_instance" "manager" {
   ami                         = var.ami_id
   instance_type               = var.instance_type
   subnet_id                   = var.private_subnet_id
-  vpc_security_group_ids      = [aws_security_group.bastion_sg.id]
+  vpc_security_group_ids      = [aws_security_group.manager_sg.id]
   associate_public_ip_address = false
   iam_instance_profile        = var.iam_instance_profile
 
-  user_data = file("${path.module}/user_data_ssm.sh")
+  # user_data = file("${path.module}/user_data_ssm.sh")
+  user_data = templatefile("${path.module}/user_data_ssm.sh", {
+    environment = var.environment
+  })
 
   tags = {
-    Name    = var.manager_name
+    Name    = "${var.environment}-${var.manager_name}"
     Role    = var.manager_role
     Cluster = var.manager_cluster
   }
@@ -96,7 +99,7 @@ resource "null_resource" "fetch_kubeconfig" {
       echo "⌛ Waiting up to 10 minutes for kubeconfig on manager..."
 
       INSTANCE_ID=$(aws ec2 describe-instances \
-        --filters "Name=tag:Name,Values=${var.manager_name}" \
+        --filters "Name=tag:Name,Values=${var.environment}-${var.manager_name}" \
         --query "Reservations[0].Instances[0].InstanceId" \
         --output text)
 

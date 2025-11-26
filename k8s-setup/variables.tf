@@ -32,6 +32,10 @@ variable "existing_vpc_name" {
   description = "Name of the already existing VPC to use"
   type        = string
 }
+variable "environment" {
+  type = string
+
+}
 
 
 variable "node" {
@@ -83,5 +87,3 @@ variable "manager" {
     subnet_index          = number
   })
 }
-
-

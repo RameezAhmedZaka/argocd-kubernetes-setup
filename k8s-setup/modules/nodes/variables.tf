@@ -101,3 +101,6 @@ variable "run_join_command-name" {
 variable "configure_kubeconfig_name" {
   type = string
 }
+variable "environment" {
+  type = string
+}
